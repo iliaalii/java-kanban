@@ -1,7 +1,10 @@
+import util.Tester;
+
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager manager = new TaskManager();
-
+        //Запуск тестовой проверки
+        Tester tester = new Tester();
+        tester.startTest();
     }
 }

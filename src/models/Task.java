@@ -1,3 +1,5 @@
+package models;
+
 import java.util.Objects;
 
 public class Task {
@@ -10,6 +12,12 @@ public class Task {
         this.title = title;
         this.description = description;
         this.status = status;
+    }
+
+    public Task(String title, String description){
+        this.title = title;
+        this.description = description;
+        this.status = StatusTask.NEW;
     }
 
     public void setId(int tag) {

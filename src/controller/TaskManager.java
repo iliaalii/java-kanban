@@ -1,3 +1,10 @@
+package controller;
+
+import models.Task;
+import models.Epic;
+import models.Subtask;
+import models.StatusTask;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,16 +15,16 @@ public class TaskManager {
     private int idCounter = 1;
 
     //Получение списка по типу задачи
-    public HashMap<Integer, Task> getListAllTask() {
-        return tasks;
+    public ArrayList<Task> getListAllTask() {
+        return new ArrayList<>(tasks.values());
     }
 
-    public HashMap<Integer, Epic> getListAllEpic() {
-        return epics;
+    public ArrayList<Epic> getListAllEpic() {
+        return new ArrayList<>(epics.values());
     }
 
-    public HashMap<Integer, Subtask> getListAllSubtask() {
-        return subtasks;
+    public ArrayList<Subtask> getListAllSubtask() {
+        return new ArrayList<>(subtasks.values());
     }
 
     //Добавление новых задач
@@ -105,14 +112,10 @@ public class TaskManager {
     }
 
     public void removeEpicById(int epicId) {
-        ArrayList<Integer> listForRemoveSubtask = new ArrayList<>();
         for (Subtask subtask : subtasks.values()) {
             if (subtask.getEpicId() == epicId) {
-                listForRemoveSubtask.add(subtask.getId());
+                subtasks.remove(subtask.getId());
             }
-        }
-        for (int id : listForRemoveSubtask) {
-            subtasks.remove(id);
         }
         epics.remove(epicId);
     }
