@@ -1,5 +1,6 @@
 package util;
 
+import controller.Managers;
 import controller.TaskManager;
 import models.Epic;
 import models.StatusTask;
@@ -10,27 +11,27 @@ public class Tester {
 
     public void startTest(){
         System.out.println("Воспроизводим тест...");
-        TaskManager manager = new TaskManager();
+        TaskManager manager = Managers.getDefault();
 
         System.out.println("Создание и добавление простых задач...");
         Task taskTest1 = new Task("test1", "other", StatusTask.NEW);        //
         Task taskTest2 = new Task("test2", "other another", StatusTask.NEW);
-        manager.addTask(taskTest1);
-        manager.addTask(taskTest2);
+        manager.add(taskTest1);
+        manager.add(taskTest2);
 
         System.out.println("Создание и добавление EPIC задач...");
         Epic epicTest1 = new Epic("EPIC", "epic task");
         Epic epicTest2 = new Epic("EPIC", "epic task check");
-        manager.addEpic(epicTest1);
-        manager.addEpic(epicTest2);
+        manager.add(epicTest1);
+        manager.add(epicTest2);
 
         System.out.println("Создание и добавление подзадач эпиков...");
         Subtask subtaskTest1 = new Subtask("sub1", "other another", StatusTask.NEW, epicTest1.getId());
         Subtask subtaskTest2 = new Subtask("sub2", "other another", StatusTask.NEW, epicTest1.getId());
         Subtask subtaskTest3 = new Subtask("sub3", "other another", StatusTask.NEW, epicTest2.getId());
-        manager.addSubtask(subtaskTest1);
-        manager.addSubtask(subtaskTest2);
-        manager.addSubtask(subtaskTest3);
+        manager.add(subtaskTest1);
+        manager.add(subtaskTest2);
+        manager.add(subtaskTest3);
 
         System.out.println("\nВывод всех списков:");
         System.out.println("список задач: " + manager.getListAllTask());
@@ -46,12 +47,12 @@ public class Tester {
         subtaskTest3.setStatus(StatusTask.DONE);
 
         System.out.println("Обновление задач по ID...");
-        manager.updateTask(taskTest1);
-        manager.updateTask(taskTest2);
-        manager.updateEpic(epicTest1);
-        manager.updateEpic(epicTest2);
-        manager.updateSubtask(subtaskTest1);
-        manager.updateSubtask(subtaskTest3);
+        manager.update(taskTest1);
+        manager.update(taskTest2);
+        manager.update(epicTest1);
+        manager.update(epicTest2);
+        manager.update(subtaskTest1);
+        manager.update(subtaskTest3);
 
         System.out.println("\nВывод всех списков после обновления:");
         System.out.println("список задач: " + manager.getListAllTask());
@@ -82,6 +83,11 @@ public class Tester {
         System.out.println("список задач: " + manager.getListAllTask());
         System.out.println("список задач EPIC: " + manager.getListAllEpic());
         System.out.println("список задач subEPIC: " + manager.getListAllSubtask());
+
+        System.out.println("\nПолучение списка истории поиска по id:");
+        System.out.println(manager.getHistory());
+
+        System.out.println("Завершение теста!");
     }
 }
 

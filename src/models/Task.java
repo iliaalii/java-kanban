@@ -1,7 +1,5 @@
 package models;
 
-import java.util.Objects;
-
 public class Task {
     private String title;           // название задачи
     private String description;     // описание задачи
@@ -14,7 +12,7 @@ public class Task {
         this.status = status;
     }
 
-    public Task(String title, String description){
+    public Task(String title, String description) {
         this.title = title;
         this.description = description;
         this.status = StatusTask.NEW;
@@ -40,8 +38,9 @@ public class Task {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(title, task.title) && Objects.equals(description, task.description) && status == task.status;
+        return id == task.id;
     }
+
 
     @Override
     public int hashCode() {
