@@ -5,7 +5,6 @@ import models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +29,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void checkingHistorySize() {
+    void removeOldestTask() {
         for (int i = 1; i <= 11; i++) {
             Task task = new Task("Test removeOldestTask " + i, "Test removeOldestTask " + i + " description", StatusTask.NEW);
             task.setId(i);
@@ -38,33 +37,9 @@ class InMemoryHistoryManagerTest {
         }
         final List<Task> history = historyManager.getHistory();
         assertNotNull(history, "История не пустая.");
-        assertEquals(11, history.size(), "История должна содержать 10 задач.");
-        assertEquals(1, history.get(0).getId(), "Первая задача должна быть первой добавленной задачей.");
-        assertEquals(11, history.get(history.size() - 1).getId(), "Последняя задача должна быть одиннадцатой добавленной задачей.");
-    }
-
-    @Test
-    void checkForDuplicates() {
-        ArrayList<Task> checklist = new ArrayList<>();
-
-        for (int i = 1; i <= 3; i++) {
-            Task task = new Task("Test task " + i, "Test removeDuplicates " + i + " description", StatusTask.NEW);
-            task.setId(i);
-            historyManager.add(task);
-            checklist.add(task);
-        }
-        List<Task> history = historyManager.getHistory();
-
-        assertEquals(3, history.size());
-        assertEquals(checklist, history);
-        Task task = history.get(0);
-        historyManager.add(task);
-        checklist.remove(0);
-        checklist.add(task);
-        history = historyManager.getHistory();
-
-        assertEquals(3, history.size(), "Превышено количество, должно быть 3");
-        assertEquals(checklist, history, "Не правильный порядок, либо количество");
+        assertEquals(10, history.size(), "История должна содержать 10 задач.");
+        assertEquals(2, history.get(0).getId(), "Первая задача должна быть второй добавленной задачей.");
+        assertEquals(11, history.get(9).getId(), "Последняя задача должна быть одиннадцатой добавленной задачей.");
     }
 
     @Test

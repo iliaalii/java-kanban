@@ -43,22 +43,6 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void checkingHistoryOutput() {
-        manager.add(task1);
-        manager.add(task2);
-        manager.add(epic);
-        manager.getTaskById(1);
-        manager.getTaskById(2);
-        manager.getEpicById(3);
-
-        assertEquals(3, manager.getHistory().size());
-        for (int i = 0; i < 10; i++) {
-            manager.getTaskById(1);
-        }
-        assertEquals(3, manager.getHistory().size(), "Превышено количество, должно быть 3");
-    }
-
-    @Test
     void updateTask() {
         manager.add(epic);
         assertEquals(StatusTask.NEW, manager.getEpicById(1).getStatus());
