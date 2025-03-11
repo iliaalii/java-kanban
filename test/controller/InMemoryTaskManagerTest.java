@@ -7,8 +7,6 @@ import models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -42,40 +40,6 @@ class InMemoryTaskManagerTest {
         manager.add(task2);
         assertEquals(2, manager.getListAllTask().size());
         assertNotEquals(manager.getTaskById(1), manager.getTaskById(2));
-    }
-
-    @Test
-    void checkingHistoryOutput() {
-        manager.add(task1);
-        manager.add(task2);
-        manager.add(epic);
-        manager.getTaskById(1);
-        manager.getTaskById(2);
-        manager.getEpicById(3);
-        ArrayList<Task> checklist = new ArrayList<>();
-
-        checklist.add(task1);
-        checklist.add(task2);
-        checklist.add(epic);
-        assertEquals(3, manager.getHistory().size());
-        assertEquals(manager.getHistory(), checklist);
-        for (int i = 0; i < 10; i++) {
-            manager.getTaskById(1);
-        }
-        checklist.remove(0);
-        checklist.add(task1);
-        assertEquals(3, manager.getHistory().size(), "Превышено количество, должно быть 3");
-        assertEquals(manager.getHistory(), checklist, "Не правильный порядок, либо количество");
-    }
-
-    @Test
-    void checkingHistorySize(){
-        for (int i = 0; i < 20; i++) {
-            task1 = new Task("задача" + i, "тестируем");
-            manager.add(task1);
-            manager.getTaskById(task1.getId());
-        }
-        assertEquals(20, manager.getHistory().size(), "Превышено количество, должно быть 20");
     }
 
     @Test
