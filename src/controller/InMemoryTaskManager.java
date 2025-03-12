@@ -166,6 +166,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
         if (counterSubtasksEpic == counterDoneSubtasks && counterSubtasksEpic != 0) {
             epic.setStatus(StatusTask.DONE);
+        } else if (counterSubtasksEpic != 0 && counterDoneSubtasks != 0) {
+            epic.setStatus(StatusTask.IN_PROGRESS);
         }
     }
 

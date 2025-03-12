@@ -1,6 +1,5 @@
 package controller;
 
-import models.Node;
 import models.Task;
 
 import java.util.ArrayList;
@@ -17,12 +16,11 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node newNode = new Node(task);
         if (head == null) {
             head = newNode;
-            tail = newNode;
         } else {
             tail.next = newNode;
             newNode.prev = tail;
-            tail = newNode;
         }
+        tail = newNode;
         return newNode;
     }
 
@@ -73,5 +71,15 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<Task> getHistory() {
         return List.copyOf(getTasks());
+    }
+}
+
+class Node {
+    public Task data;           //ссылка на задачу
+    public Node next;           //ссылка на следующий узел
+    public Node prev;           //ссылка на предыдущий узел
+
+    public Node(Task data) {
+        this.data = data;
     }
 }
