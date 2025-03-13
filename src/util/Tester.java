@@ -9,7 +9,7 @@ import models.Task;
 
 public class Tester {
 
-    public void startTest(){
+    public void startTest() {
         System.out.println("Воспроизводим тест...");
         TaskManager manager = Managers.getDefault();
 
@@ -90,4 +90,3 @@ public class Tester {
         System.out.println("Завершение теста!");
     }
 }
-

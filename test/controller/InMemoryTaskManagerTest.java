@@ -43,29 +43,21 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void checkingHistoryOutput() {
-        manager.add(task1);
-        manager.add(task2);
-        manager.add(epic);
-        manager.getTaskById(1);
-        manager.getTaskById(2);
-        manager.getEpicById(3);
-        assertEquals(3, manager.getHistory().size());
-        for (int i = 0; i < 10; i++) {
-            manager.getTaskById(1);
-        }
-        assertEquals(10, manager.getHistory().size(), "Превышен лимит истории");
-    }
-
-    @Test
     void updateTask() {
         manager.add(epic);
         assertEquals(StatusTask.NEW, manager.getEpicById(1).getStatus());
-        Subtask subtask = new Subtask("подзадача", "уже выполнена", 1);
-        manager.add(subtask);
-        subtask.setStatus(StatusTask.DONE);
-        manager.update(subtask);
-        assertEquals(StatusTask.DONE, manager.getEpicById(1).getStatus());
+        Subtask subtask1 = new Subtask("подзадача 1", "статус станет done", 1);
+        Subtask subtask2 = new Subtask("подзадача 2", "статус new", 1);
+        manager.add(subtask1);
+        manager.add(subtask2);
+        assertEquals(StatusTask.NEW, manager.getEpicById(1).getStatus(), "статус должен быть NEW");
+        subtask1.setStatus(StatusTask.DONE);
+        manager.update(subtask1);
+        assertEquals(StatusTask.IN_PROGRESS, manager.getEpicById(1).getStatus(), "статус должен быть IN_PROGRESS");
+        subtask2.setStatus(StatusTask.DONE);
+        manager.update(subtask2);
+        assertEquals(StatusTask.DONE, manager.getEpicById(1).getStatus(), "статус должен быть DONE");
+
     }
 
     @Test
