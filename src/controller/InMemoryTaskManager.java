@@ -37,7 +37,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void add(Task task) {
         if (task.getId() == 0) {
             task.setId(idCounter++);
-        } else if (tasks.get(task.getId()) != null){
+        } else if (tasks.get(task.getId()) != null) {
             task.setId(idCounter++);
         } else {
             idCounter = task.getId() + 1;
@@ -50,7 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setStatus(StatusTask.NEW);
         if (epic.getId() == 0) {
             epic.setId(idCounter++);
-        } else if (tasks.get(epic.getId()) != null){
+        } else if (tasks.get(epic.getId()) != null) {
             epic.setId(idCounter++);
         } else {
             idCounter = epic.getId() + 1;
@@ -64,7 +64,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic != null) {
             if (subtask.getId() == 0) {
                 subtask.setId(idCounter++);
-            } else if (tasks.get(subtask.getId()) != null){
+            } else if (tasks.get(subtask.getId()) != null) {
                 subtask.setId(idCounter++);
             } else {
                 idCounter = subtask.getId() + 1;
