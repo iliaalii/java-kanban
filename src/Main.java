@@ -5,6 +5,8 @@ public class Main {
     public static void main(String[] args) {
         //Запуск тестовой проверки
         Tester tester = new Tester();
-        tester.startTest();
+//      запущен новый тест с использованием тестового файла
+//      старый запускается с помощью "tester.startTestInMemoryManager()"
+        tester.startTestFileBackedManager();
     }
 }

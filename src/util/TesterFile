@@ -1,0 +1,4 @@
+1,TASK,Task test1,проверка создания,NEW
+4,TASK,Task test1,,NEW
+2,EPIC,Epic test1, проверка создания,NEW
+3,SUBTASK,subTask test1,я подзадача,NEW,2
