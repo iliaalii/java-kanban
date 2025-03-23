@@ -3,12 +3,16 @@ package util;
 import controller.FileBackedTaskManager;
 import controller.Managers;
 import controller.TaskManager;
+import exceptions.ManagerSaveException;
 import models.Epic;
 import models.StatusTask;
 import models.Subtask;
 import models.Task;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 
 public class Tester {
 
@@ -97,7 +101,7 @@ public class Tester {
     public void startTestFileBackedManager() {
         System.out.println("Воспроизводим тест file менеджера...");
         System.out.println("Загружаем задачи из тестового файла...");
-        TaskManager manager = FileBackedTaskManager.loadFromFile(new File("src/util/TesterFile"));
+        TaskManager manager = FileBackedTaskManager.loadFromFile(new File("src/resources/TesterFile"));
 
         System.out.println("Проверяем списки...");
         System.out.println("Список задач: " + manager.getListAllTask());
@@ -132,11 +136,14 @@ public class Tester {
         System.out.println("Список подзадач (пуст): " + manager.getListAllSubtask());
 
         System.out.println("\nВозврат начального состояния TestFile...");
-        manager.add(new Task("Task test1", "проверка создания", StatusTask.NEW, 1));
-        manager.add(new Task("Task test1", "", StatusTask.NEW, 4));
-        manager.add(new Epic("Epic test1", " проверка создания", StatusTask.NEW, 2));
-        manager.add(new Subtask("subTask test1", "я подзадача", StatusTask.NEW, 3, 2));
-
+        try (Writer writer = new FileWriter("src/resources/TesterFile")) {
+            writer.write("1,TASK,Task test1,проверка создания,NEW\n");
+            writer.write("2,EPIC,Epic test1, проверка создания,NEW\n");
+            writer.write("3,SUBTASK,subTask test1,я подзадача,NEW,2\n");
+            writer.write("4,TASK,Task test1,,NEW\n");
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка сохранения: " + e.getMessage());
+        }
 
         System.out.println("Завершение теста!\n");
         System.out.println("---".repeat(10));

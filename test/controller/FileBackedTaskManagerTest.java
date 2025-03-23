@@ -18,7 +18,7 @@ class FileBackedTaskManagerTest {
     Epic epic;
 
     @BeforeEach
-    void beforeEach() throws ManagerReadException {
+    void beforeEach() {
         try {
             File tempFile = File.createTempFile("TempDataTask", null);
             manager = FileBackedTaskManager.loadFromFile(tempFile);
@@ -42,7 +42,7 @@ class FileBackedTaskManagerTest {
 
     @Test
     void uploadingANonEmptyFile() {
-        manager = FileBackedTaskManager.loadFromFile(new File("src/util/TesterFile")); // файл из ручного теста
+        manager = FileBackedTaskManager.loadFromFile(new File("src/resources/TesterFile")); // файл из ручного теста
         assertNotNull(manager.getTaskById(1));
         assertNotNull(manager.getTaskById(4));
         assertNotNull(manager.getSubtaskById(3));

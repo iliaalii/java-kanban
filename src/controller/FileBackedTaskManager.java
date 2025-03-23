@@ -1,6 +1,8 @@
 package controller;
 
 import java.io.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 import exceptions.ManagerSaveException;
 import exceptions.ManagerReadException;
@@ -13,7 +15,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.tasksData = file;
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) throws ManagerReadException {
+    public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -40,16 +42,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return taskManager;
     }
 
-    private void save() throws ManagerSaveException {
+    private void save() {
+        Map<Integer, String> sortList = new TreeMap<>();
+
+        for (Task task : super.getListAllTask()) {
+            sortList.put(task.getId(), toString(task));
+        }
+        for (Epic task : super.getListAllEpic()) {
+            sortList.put(task.getId(), toString(task));
+        }
+        for (Subtask task : super.getListAllSubtask()) {
+            sortList.put(task.getId(), toString(task));
+        }
         try (Writer writer = new FileWriter(tasksData)) {
-            for (Task task : super.getListAllTask()) {
-                writer.write(toString(task) + "\n");
-            }
-            for (Epic task : super.getListAllEpic()) {
-                writer.write(toString(task) + "\n");
-            }
-            for (Subtask task : super.getListAllSubtask()) {
-                writer.write(toString(task) + "\n");
+            for (String line : sortList.values()) {
+                writer.write(line + "\n");
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения: " + e.getMessage());

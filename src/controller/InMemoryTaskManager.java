@@ -35,9 +35,7 @@ public class InMemoryTaskManager implements TaskManager {
     //Добавление новых задач
     @Override
     public void add(Task task) {
-        if (task.getId() == 0) {
-            task.setId(idCounter++);
-        } else if (tasks.get(task.getId()) != null) {
+        if (task.getId() < idCounter) {
             task.setId(idCounter++);
         } else {
             idCounter = task.getId() + 1;
@@ -48,9 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void add(Epic epic) {
         epic.setStatus(StatusTask.NEW);
-        if (epic.getId() == 0) {
-            epic.setId(idCounter++);
-        } else if (tasks.get(epic.getId()) != null) {
+        if (epic.getId() < idCounter) {
             epic.setId(idCounter++);
         } else {
             idCounter = epic.getId() + 1;
@@ -62,9 +58,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void add(Subtask subtask) {
         Epic epic = epics.get(subtask.getEpicId());
         if (epic != null) {
-            if (subtask.getId() == 0) {
-                subtask.setId(idCounter++);
-            } else if (tasks.get(subtask.getId()) != null) {
+            if (subtask.getId() < idCounter) {
                 subtask.setId(idCounter++);
             } else {
                 idCounter = subtask.getId() + 1;

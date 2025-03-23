@@ -12,6 +12,6 @@ public class Managers {
     }
 
     public static FileBackedTaskManager getDefaultFileBackedTaskManager() {
-        return FileBackedTaskManager.loadFromFile(new File("src/controller/TasksData"));
+        return FileBackedTaskManager.loadFromFile(new File("src/resources/TasksData"));
     }
 }
