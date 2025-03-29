@@ -6,6 +6,20 @@ public class Task {
     private StatusTask status;      // статус задачи
     private int id;                 // id задачи
 
+    public Task(String[] data) {
+        this.title = data[2];
+        this.description = data[3];
+        this.status = StatusTask.valueOf(data[4]);
+        this.id = Integer.parseInt(data[0]);
+    }
+
+    public Task(String title, String description, StatusTask status, int id) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.id = id;
+    }
+
     public Task(String title, String description, StatusTask status) {
         this.title = title;
         this.description = description;
@@ -34,13 +48,20 @@ public class Task {
         return id;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         return id == task.id;
     }
-
 
     @Override
     public int hashCode() {

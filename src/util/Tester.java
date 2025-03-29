@@ -1,16 +1,23 @@
 package util;
 
+import controller.FileBackedTaskManager;
 import controller.Managers;
 import controller.TaskManager;
+import exceptions.ManagerSaveException;
 import models.Epic;
 import models.StatusTask;
 import models.Subtask;
 import models.Task;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+
 public class Tester {
 
-    public void startTest() {
-        System.out.println("Воспроизводим тест...");
+    public void startTestInMemoryManager() {
+        System.out.println("Воспроизводим тест ram менеджера...");
         TaskManager manager = Managers.getDefault();
 
         System.out.println("Создание и добавление простых задач...");
@@ -87,6 +94,58 @@ public class Tester {
         System.out.println("\nПолучение списка истории поиска по id:");
         System.out.println(manager.getHistory());
 
-        System.out.println("Завершение теста!");
+        System.out.println("Завершение теста!\n");
+        System.out.println("---".repeat(10));
+    }
+
+    public void startTestFileBackedManager() {
+        System.out.println("Воспроизводим тест file менеджера...");
+        System.out.println("Загружаем задачи из тестового файла...");
+        TaskManager manager = FileBackedTaskManager.loadFromFile(new File("src/resources/TesterFile"));
+
+        System.out.println("Проверяем списки...");
+        System.out.println("Список задач: " + manager.getListAllTask());
+        System.out.println("Список эпиков: " + manager.getListAllEpic());
+        System.out.println("Список подзадач: " + manager.getListAllSubtask());
+
+        System.out.println("\nСоздание и добавление подзадачи эпика...");
+        manager.add(new Subtask("1", "123", StatusTask.DONE, 2));
+        System.out.println("Список эпиков (статус изменен на in progress): " + manager.getListAllEpic());
+        System.out.println("Список подзадач: " + manager.getListAllSubtask());
+
+        System.out.println("\nИзменение статусов подзадачи...");
+        System.out.println("Обновление задачи...");
+        Subtask subtask = new Subtask("subTask test1", "теперь выполненно", StatusTask.DONE, 3, 2);
+        manager.update(subtask);
+        System.out.println("Список эпиков (статус изменен на done): " + manager.getListAllEpic());
+        System.out.println("Список подзадач (оба DONE): " + manager.getListAllSubtask());
+
+        System.out.println("\nПроверка удаления по ID");
+        manager.removeEpicById(2);
+        System.out.println("Список эпиков (пуст): " + manager.getListAllEpic());
+        System.out.println("Список подзадач (пуст): " + manager.getListAllSubtask());
+
+        System.out.println("\nПроверка на удаление всех задач");
+        System.out.println("Очистка всех списков задач...");
+        manager.removeAllTask();
+        manager.removeAllEpic();
+        manager.removeAllSubtask();
+        System.out.println("Список задач (пуст): " + manager.getListAllTask());
+        System.out.println("Список эпиков (пуст): " + manager.getListAllEpic());
+        System.out.println("Список подзадач (пуст): " + manager.getListAllSubtask());
+        System.out.println("Список подзадач (пуст): " + manager.getListAllSubtask());
+
+        System.out.println("\nВозврат начального состояния TestFile...");
+        try (Writer writer = new FileWriter("src/resources/TesterFile")) {
+            writer.write("1,TASK,Task test1,проверка создания,NEW\n");
+            writer.write("2,EPIC,Epic test1, проверка создания,NEW\n");
+            writer.write("3,SUBTASK,subTask test1,я подзадача,NEW,2\n");
+            writer.write("4,TASK,Task test1,,NEW\n");
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка сохранения: " + e.getMessage());
+        }
+
+        System.out.println("Завершение теста!\n");
+        System.out.println("---".repeat(10));
     }
 }
