@@ -1,16 +1,34 @@
 package models;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
-    private String title;           // название задачи
-    private String description;     // описание задачи
-    private StatusTask status;      // статус задачи
-    private int id;                 // id задачи
+    private String title;               // название задачи
+    private String description;         // описание задачи
+    private StatusTask status;          // статус задачи
+    private int id;                     // id задачи
+    protected Duration duration;          // продолжительность выполнения в минутах
+    protected LocalDateTime startTime;    // время начала выполнения
 
     public Task(String[] data) {
         this.title = data[2];
         this.description = data[3];
         this.status = StatusTask.valueOf(data[4]);
         this.id = Integer.parseInt(data[0]);
+        if (!data[5].equals("null")) {
+            this.duration = Duration.parse(data[5]);
+            this.startTime = LocalDateTime.parse(data[6]);
+        }
+    }
+
+    public Task(String title, String description, StatusTask status, int id, Duration duration, LocalDateTime start) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.id = id;
+        this.duration = duration;
+        this.startTime = start;
     }
 
     public Task(String title, String description, StatusTask status, int id) {
@@ -56,6 +74,18 @@ public class Task {
         return description;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -80,10 +110,12 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
+                "title=" + title +
+                ", description=" + description +
                 ", ID=" + id +
                 ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
 }

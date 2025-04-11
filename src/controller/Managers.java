@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.File;
+import java.nio.file.Files;
 
 public class Managers {
     public static TaskManager getDefault() {
@@ -12,6 +13,14 @@ public class Managers {
     }
 
     public static FileBackedTaskManager getDefaultFileBackedTaskManager() {
-        return FileBackedTaskManager.loadFromFile(new File("src/resources/TasksData"));
+        File file = new File("src/resources/TasksData");
+        if (!Files.exists(file.toPath())) {
+            try {
+                Files.createFile(file.toPath());
+            } catch (Exception exp) {
+                System.out.println("Не удалось создать файл");
+            }
+        }
+        return FileBackedTaskManager.loadFromFile(file);
     }
 }

@@ -1,8 +1,6 @@
 package controller;
 
 import exceptions.ManagerReadException;
-import models.Epic;
-import models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,11 +9,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest {
-    FileBackedTaskManager manager;
-    Task task1;
-    Task task2;
-    Epic epic;
+class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @BeforeEach
     void beforeEach() {
@@ -25,9 +19,7 @@ class FileBackedTaskManagerTest {
         } catch (IOException e) {
             throw new ManagerReadException("Ошибка чтения: " + e.getMessage());
         }
-        task1 = new Task("задача один", "простая задача");
-        task2 = new Task("задача два", "простая задача, чуть другая");
-        epic = new Epic("эпик", "ЭПИЧЕСКОЕ ЗАДАНИЕ");
+        super.beforeEach();
     }
 
     @Test
@@ -49,26 +41,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    void addingAndSearchingById() {
-        manager.add(task1);
-        manager.add(task2);
-        manager.add(epic);
-        assertNotNull(manager.getTaskById(1));
-        assertNotNull(manager.getTaskById(2));
-        assertNotNull(manager.getEpicById(3));
-    }
-
-    @Test
-    void remove() {
-        manager.add(task1);
-        manager.add(task2);
-        assertEquals(2, manager.getListAllTask().size());
-        manager.removeTaskById(1);
-        assertEquals(1, manager.getListAllTask().size());
-        for (int i = 0; i < 5; i++) {
-            manager.add(task1);
-        }
-        manager.removeAllTask();
-        assertEquals(0, manager.getListAllTask().size());
+    public void testException() {
+        assertThrows(ManagerReadException.class, () -> FileBackedTaskManager.loadFromFile(new File("error")));
     }
 }

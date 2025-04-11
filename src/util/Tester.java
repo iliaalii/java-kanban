@@ -4,10 +4,7 @@ import controller.FileBackedTaskManager;
 import controller.Managers;
 import controller.TaskManager;
 import exceptions.ManagerSaveException;
-import models.Epic;
-import models.StatusTask;
-import models.Subtask;
-import models.Task;
+import models.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -137,10 +134,10 @@ public class Tester {
 
         System.out.println("\nВозврат начального состояния TestFile...");
         try (Writer writer = new FileWriter("src/resources/TesterFile")) {
-            writer.write("1,TASK,Task test1,проверка создания,NEW\n");
-            writer.write("2,EPIC,Epic test1, проверка создания,NEW\n");
-            writer.write("3,SUBTASK,subTask test1,я подзадача,NEW,2\n");
-            writer.write("4,TASK,Task test1,,NEW\n");
+            writer.write("1,TASK,Task test1,проверка создания,NEW,PT30M,2025-04-10T12:00\n");
+            writer.write("2,EPIC,Epic test1, проверка создания,NEW,PT30M,2025-04-10T14:00\n");
+            writer.write("3,SUBTASK,subTask test1,я подзадача,NEW,PT30M,2025-04-10T14:00,2\n");
+            writer.write("4,TASK,Task test1,,NEW,PT30M,2025-04-10T13:00\n");
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения: " + e.getMessage());
         }
