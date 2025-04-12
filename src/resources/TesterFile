@@ -2,3 +2,4 @@
 2,EPIC,Epic test1, проверка создания,NEW,PT30M,2025-04-10T14:00
 3,SUBTASK,subTask test1,я подзадача,NEW,PT30M,2025-04-10T14:00,2
 4,TASK,Task test1,,NEW,PT30M,2025-04-10T13:00
+7,TASK,Task test1,,NEW,null,null

@@ -138,6 +138,7 @@ public class Tester {
             writer.write("2,EPIC,Epic test1, проверка создания,NEW,PT30M,2025-04-10T14:00\n");
             writer.write("3,SUBTASK,subTask test1,я подзадача,NEW,PT30M,2025-04-10T14:00,2\n");
             writer.write("4,TASK,Task test1,,NEW,PT30M,2025-04-10T13:00\n");
+            writer.write("7,TASK,Task test1,,NEW,null,null\n");
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения: " + e.getMessage());
         }

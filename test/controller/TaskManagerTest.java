@@ -116,4 +116,42 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(3, manager.getListAllTask().size(), "3 элемента в списке");
         assertEquals(4, manager.getPrioritizedTasks().stream().findFirst().get().getId(), "последняя добавленная задача, первая в приоритете");
     }
+
+    @Test
+    void removeHistory() {
+        manager.add(task1);
+        manager.add(task2);
+        manager.getTaskById(1);
+        manager.getTaskById(2);
+        assertEquals(2, manager.getHistory().size());
+        manager.removeTaskById(1);
+        assertEquals(1, manager.getHistory().size());
+        manager.removeAllTask();
+        assertEquals(0, manager.getHistory().size());
+    }
+
+    @Test
+    void removePrioritizedTask() {
+        task1 = new Task("task", "", StatusTask.NEW, 0,
+                Duration.ofMinutes(30), LocalDateTime.of(2025, Month.APRIL, 10, 12, 0));
+        task2 = new Task("task", "", StatusTask.NEW, 0,
+                Duration.ofMinutes(30), LocalDateTime.of(2025, Month.APRIL, 10, 13, 20));
+        manager.add(task1);
+        manager.add(task2);
+        assertEquals(2, manager.getPrioritizedTasks().size());
+        manager.removeTaskById(1);
+        assertEquals(1, manager.getPrioritizedTasks().size());
+        manager.removeAllTask();
+        assertEquals(0, manager.getPrioritizedTasks().size());
+    }
+
+    @Test
+    void getAllSubtaskOfEpic() {
+        manager.add(epic);
+        manager.add(subtask1);
+        manager.add(subtask2);
+        assertEquals(2, manager.getAllSubtaskOfEpic(epic).size());
+        manager.update(subtask2);
+        assertEquals(2, manager.getAllSubtaskOfEpic(epic).size());
+    }
 }

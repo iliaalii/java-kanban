@@ -85,19 +85,30 @@ public class InMemoryTaskManager implements TaskManager {
     //Удаление всего списка по типу задачи
     @Override
     public void removeAllTask() {
-        tasks.values().forEach(prioritizedTasksList::remove);
+        tasks.keySet().forEach(historyManager::remove);
+        tasks.values().stream()
+                .filter(task -> task.getStartTime() != null)
+                .forEach(prioritizedTasksList::remove);
         tasks.clear();
     }
 
     @Override
     public void removeAllEpic() {
+        epics.keySet().forEach(historyManager::remove);
         epics.clear();
+        subtasks.keySet().forEach(historyManager::remove);
+        subtasks.values().stream()
+                .filter(task -> task.getStartTime() != null)
+                .forEach(prioritizedTasksList::remove);
         subtasks.clear();
     }
 
     @Override
     public void removeAllSubtask() {
-        subtasks.values().forEach(prioritizedTasksList::remove);
+        subtasks.keySet().forEach(historyManager::remove);
+        subtasks.values().stream()
+                .filter(task -> task.getStartTime() != null)
+                .forEach(prioritizedTasksList::remove);
         subtasks.clear();
         epics.values().forEach(epic -> {
             epic.clearSubtask();
@@ -114,13 +125,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getEpicById(int id) {
+    public Epic getEpicById(int id) {
         historyManager.add(epics.get(id));
         return epics.get(id);
     }
 
     @Override
-    public Task getSubtaskById(int id) {
+    public Subtask getSubtaskById(int id) {
         historyManager.add(subtasks.get(id));
         return subtasks.get(id);
     }
@@ -165,6 +176,7 @@ public class InMemoryTaskManager implements TaskManager {
                 prioritizedTasksList.add(newSubtask);
             }
             subtasks.put(newSubtask.getId(), newSubtask);
+            epic.unlinkSubtask(newSubtask.getId());
             epic.linkSubtask(newSubtask.getId());
             checkStatusEpic(epic);
             setEpicTimes(epic);
@@ -174,18 +186,24 @@ public class InMemoryTaskManager implements TaskManager {
     //Удаление по ID
     @Override
     public void removeTaskById(int taskId) {
-        prioritizedTasksList.remove(tasks.get(taskId));
+        if (tasks.get(taskId).getStartTime() != null) {
+            prioritizedTasksList.remove(tasks.get(taskId));
+        }
+        historyManager.remove(taskId);
         tasks.remove(taskId);
     }
 
     @Override
     public void removeEpicById(int epicId) {
         if (epics.get(epicId) != null) {
-            epics.get(epicId).getSubtaskList().stream()
-                    .peek(id -> {
-                        prioritizedTasksList.remove(subtasks.get(id));
+            epics.get(epicId).getSubtaskList()
+                    .forEach(id -> {
+                        if (subtasks.get(id).getStartTime() != null) {
+                            prioritizedTasksList.remove(subtasks.get(id));
+                        }
+                        historyManager.remove(id);
                         subtasks.remove(id);
-                        });
+                    });
             epics.remove(epicId);
         }
     }
@@ -194,7 +212,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeSubtaskById(int subtaskId) {
         Epic epic = epics.get(subtasks.get(subtaskId).getEpicId());
         if (epic != null) {
-            prioritizedTasksList.remove(subtasks.get(subtaskId));
+            if (subtasks.get(subtaskId).getStartTime() != null) {
+                prioritizedTasksList.remove(subtasks.get(subtaskId));
+            }
+            historyManager.remove(subtaskId);
             subtasks.remove(subtaskId);
             epic.unlinkSubtask(subtaskId);
             checkStatusEpic(epic);
@@ -214,8 +235,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Set<Task> getPrioritizedTasks() {
-        return prioritizedTasksList;
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasksList);
     }
 
     private boolean tasksNotOverlap(Task newTask) {

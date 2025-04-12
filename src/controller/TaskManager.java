@@ -1,7 +1,6 @@
 package controller;
 
 import java.util.List;
-import java.util.Set;
 
 import models.Epic;
 import models.Subtask;
@@ -32,9 +31,9 @@ public interface TaskManager {
     //Поиск по ID
     Task getTaskById(int id);
 
-    Task getEpicById(int id);
+    Epic getEpicById(int id);
 
-    Task getSubtaskById(int id);
+    Subtask getSubtaskById(int id);
 
     //Перезапись данных
     void update(Task task);
@@ -57,5 +56,5 @@ public interface TaskManager {
     List<Task> getHistory();
 
     //Вывод списка по приоритету выполнения
-    Set<Task> getPrioritizedTasks();
+    List<Task> getPrioritizedTasks();
 }
