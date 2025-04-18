@@ -5,7 +5,7 @@ public class Subtask extends Task {
 
     public Subtask(String[] data) {
         super(data);
-        this.epicId = Integer.parseInt(data[5]);
+        this.epicId = Integer.parseInt(data[7]);
     }
 
     public Subtask(String title, String description, StatusTask status, int id, int epicId) {
@@ -27,15 +27,19 @@ public class Subtask extends Task {
         return epicId;
     }
 
-
     @Override
     public String toString() {
         return "Subtask{" +
-                "title='" + this.getTitle() + '\'' +
-                ", description='" + this.getDescription() + '\'' +
-                ", ID=" + this.getId() + '\'' +
-                ", status=" + this.getStatus() + '\'' +
-                ", epicId=" + epicId +
+                "title=" + this.getTitle() +
+                ", description=" + this.getDescription() +
+                ", ID=" + this.getId() +
+                ", status=" + this.getStatus() +
+                ", duration=" + this.getDuration() +
+                ", startTime=" + this.getStartTime() +
+                ", epicId=" + this.getEpicId() +
                 '}';
     }
 }
+
+
+

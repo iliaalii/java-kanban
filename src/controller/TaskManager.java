@@ -1,7 +1,6 @@
 package controller;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import models.Epic;
 import models.Subtask;
@@ -9,11 +8,11 @@ import models.Task;
 
 public interface TaskManager {
     //Получение списка по типу задачи
-    ArrayList<Task> getListAllTask();
+    List<Task> getListAllTask();
 
-    ArrayList<Epic> getListAllEpic();
+    List<Epic> getListAllEpic();
 
-    ArrayList<Subtask> getListAllSubtask();
+    List<Subtask> getListAllSubtask();
 
     //Добавление новых задач
     void add(Task task);
@@ -32,9 +31,9 @@ public interface TaskManager {
     //Поиск по ID
     Task getTaskById(int id);
 
-    Task getEpicById(int id);
+    Epic getEpicById(int id);
 
-    Task getSubtaskById(int id);
+    Subtask getSubtaskById(int id);
 
     //Перезапись данных
     void update(Task task);
@@ -51,8 +50,11 @@ public interface TaskManager {
     void removeSubtaskById(int subtaskId);
 
     //Получение списка всех ID подзадач определенного эпика
-    ArrayList<Subtask> getAllSubtaskOfEpic(Epic epic);
+    List<Subtask> getAllSubtaskOfEpic(Epic epic);
 
     //Вывод списка истории поиска
     List<Task> getHistory();
+
+    //Вывод списка по приоритету выполнения
+    List<Task> getPrioritizedTasks();
 }
