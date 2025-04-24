@@ -2,6 +2,7 @@ package models;
 
 import controller.Managers;
 import controller.TaskManager;
+import exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +36,11 @@ class SubtaskTest {
         Subtask task3 = new Subtask("задача3", "копия первой подзадачи, с привязкой к ней", 2);
         manager.add(epic);
         manager.add(task);
-        manager.add(task3);
+        try {
+            manager.add(task3);
+        } catch (NotFoundException e) {
+
+        }
         assertEquals(1, manager.getListAllSubtask().size(),
                 "Не должен превышать 1 (количество актуальных подзадач");
     }

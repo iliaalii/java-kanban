@@ -1,5 +1,6 @@
 package controller;
 
+import exceptions.OverlapException;
 import models.Epic;
 import models.StatusTask;
 import models.Subtask;
@@ -101,8 +102,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 Duration.ofMinutes(30), LocalDateTime.of(2025, Month.APRIL, 10, 12, 0));
         task2 = new Task("task", "", StatusTask.NEW, 0,
                 Duration.ofMinutes(30), LocalDateTime.of(2025, Month.APRIL, 10, 12, 20));
+
         manager.add(task1);
-        manager.add(task2);
+        try {
+            manager.add(task2);
+        } catch (OverlapException e) {
+
+        }
+
         manager.add(epic);
         assertEquals(1, manager.getListAllTask().size(), "1 элемент в списке");
         task2 = new Task("task", "", StatusTask.NEW, 0,
