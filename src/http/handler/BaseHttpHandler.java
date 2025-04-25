@@ -25,9 +25,9 @@ public class BaseHttpHandler implements HttpHandler {
         UNKNOWN
     }
 
-    TaskManager manager;
-    String modelTask;
-    Gson gson = new GsonBuilder()
+    protected TaskManager manager;
+    protected String modelTask;
+    protected Gson gson = new GsonBuilder()
             .registerTypeAdapter(Duration.class, new DurationAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
@@ -96,7 +96,7 @@ public class BaseHttpHandler implements HttpHandler {
             case UPDATE_TASK -> updateTask(exchange);
             case DELETE_TASK -> removeTask(exchange);
             case DELETE_ALL_TASK -> removeAllTask(exchange);
-            default -> sendText(exchange, "Endpoint not found", 404);
+            default -> sendText(exchange, "Метод не поддерживается", 405);
         }
     }
 
