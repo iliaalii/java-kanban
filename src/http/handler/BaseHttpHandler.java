@@ -15,7 +15,15 @@ import java.util.Optional;
 
 
 public class BaseHttpHandler implements HttpHandler {
-    protected enum Endpoint {GET_TASK, GET_ALL_TASKS, ADD_TASK, UPDATE_TASK, DELETE_TASK, DELETE_ALL_TASK, UNKNOWN}
+    protected enum Endpoint {
+        GET_TASK,
+        GET_ALL_TASKS,
+        ADD_TASK,
+        UPDATE_TASK,
+        DELETE_TASK,
+        DELETE_ALL_TASK,
+        UNKNOWN
+    }
 
     TaskManager manager;
     String modelTask;
