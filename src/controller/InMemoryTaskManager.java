@@ -1,5 +1,7 @@
 package controller;
 
+import exceptions.NotFoundException;
+import exceptions.OverlapException;
 import models.Task;
 import models.Epic;
 import models.Subtask;
@@ -47,6 +49,8 @@ public class InMemoryTaskManager implements TaskManager {
             if (task.getStartTime() != null) {
                 prioritizedTasksList.add(task);
             }
+        } else {
+            throw new OverlapException("Перекрытие задач по времени выполнения");
         }
     }
 
@@ -78,7 +82,11 @@ public class InMemoryTaskManager implements TaskManager {
                     prioritizedTasksList.add(subtask);
                     setEpicTimes(epic);
                 }
+            } else {
+                throw new NotFoundException("Связанный эпик не найден");
             }
+        } else {
+            throw new OverlapException("Перекрытие задач по времени выполнения");
         }
     }
 
@@ -120,31 +128,46 @@ public class InMemoryTaskManager implements TaskManager {
     //Поиск по ID
     @Override
     public Task getTaskById(int id) {
-        historyManager.add(tasks.get(id));
-        return tasks.get(id);
+        if (tasks.get(id) != null) {
+            historyManager.add(tasks.get(id));
+            return tasks.get(id);
+        }
+        throw new NotFoundException("Задача не найдена");
     }
 
     @Override
     public Epic getEpicById(int id) {
-        historyManager.add(epics.get(id));
-        return epics.get(id);
+        if (epics.get(id) != null) {
+            historyManager.add(epics.get(id));
+            return epics.get(id);
+        }
+        throw new NotFoundException("Задача не найдена");
     }
 
     @Override
     public Subtask getSubtaskById(int id) {
-        historyManager.add(subtasks.get(id));
-        return subtasks.get(id);
+        if (subtasks.get(id) != null) {
+            historyManager.add(subtasks.get(id));
+            return subtasks.get(id);
+        }
+        throw new NotFoundException("Задача не найдена");
     }
 
     //Перезапись данных
     @Override
     public void update(Task task) {
-        if (tasks.get(task.getId()) != null && ((tasksNotOverlap(task) && task.getDuration() != null) || task.getStartTime() == null)) {
-            if (task.getStartTime() != null) {
-                prioritizedTasksList.remove(tasks.get(task.getId()));
-                prioritizedTasksList.add(task);
+        if (tasks.get(task.getId()) != null) {
+            if (task.getStartTime() == null || (task.getDuration() != null && tasksNotOverlap(task))) {
+                if (task.getStartTime() != null) {
+                    prioritizedTasksList.remove(tasks.get(task.getId()));
+                    prioritizedTasksList.add(task);
+                }
+                tasks.put(task.getId(), task);
+            } else {
+                throw new OverlapException("Перекрытие задач по времени выполнения");
             }
-            tasks.put(task.getId(), task);
+        } else {
+            throw new NotFoundException("Задача не найдена");
         }
     }
 
@@ -157,40 +180,52 @@ public class InMemoryTaskManager implements TaskManager {
             checkStatusEpic(newEpic);
             setEpicTimes(newEpic);
             epics.put(newEpic.getId(), newEpic);
+        } else {
+            throw new NotFoundException("Задача не найдена");
         }
     }
 
     @Override
     public void update(Subtask newSubtask) {
         Subtask oldSubtask = subtasks.get(newSubtask.getId());
-        if (oldSubtask != null && (newSubtask.getStartTime() == null || (tasksNotOverlap(newSubtask) && newSubtask.getDuration() != null))) {
-            if (oldSubtask.getEpicId() != newSubtask.getEpicId()) {
-                Epic oldEpic = epics.get(oldSubtask.getEpicId());
-                oldEpic.unlinkSubtask(oldSubtask.getId());
-                checkStatusEpic(oldEpic);
-                setEpicTimes(oldEpic);
+        if (oldSubtask != null) {
+            if (newSubtask.getStartTime() == null || (newSubtask.getDuration() != null && tasksNotOverlap(newSubtask))) {
+                if (oldSubtask.getEpicId() != newSubtask.getEpicId()) {
+                    Epic oldEpic = epics.get(oldSubtask.getEpicId());
+                    oldEpic.unlinkSubtask(oldSubtask.getId());
+                    checkStatusEpic(oldEpic);
+                    setEpicTimes(oldEpic);
+                }
+                Epic epic = epics.get(newSubtask.getEpicId());
+                if (newSubtask.getStartTime() != null) {
+                    prioritizedTasksList.remove(subtasks.get(newSubtask.getId()));
+                    prioritizedTasksList.add(newSubtask);
+                }
+                subtasks.put(newSubtask.getId(), newSubtask);
+                epic.unlinkSubtask(newSubtask.getId());
+                epic.linkSubtask(newSubtask.getId());
+                checkStatusEpic(epic);
+                setEpicTimes(epic);
+            } else {
+                throw new OverlapException("Перекрытие задач по времени выполнения");
             }
-            Epic epic = epics.get(newSubtask.getEpicId());
-            if (newSubtask.getStartTime() != null) {
-                prioritizedTasksList.remove(subtasks.get(newSubtask.getId()));
-                prioritizedTasksList.add(newSubtask);
-            }
-            subtasks.put(newSubtask.getId(), newSubtask);
-            epic.unlinkSubtask(newSubtask.getId());
-            epic.linkSubtask(newSubtask.getId());
-            checkStatusEpic(epic);
-            setEpicTimes(epic);
+        } else {
+            throw new NotFoundException("Задача не найдена");
         }
     }
 
     //Удаление по ID
     @Override
     public void removeTaskById(int taskId) {
-        if (tasks.get(taskId).getStartTime() != null) {
-            prioritizedTasksList.remove(tasks.get(taskId));
+        if (tasks.get(taskId) != null) {
+            if (tasks.get(taskId).getStartTime() != null) {
+                prioritizedTasksList.remove(tasks.get(taskId));
+            }
+            historyManager.remove(taskId);
+            tasks.remove(taskId);
+        } else {
+            throw new NotFoundException("Задача не найдена");
         }
-        historyManager.remove(taskId);
-        tasks.remove(taskId);
     }
 
     @Override
@@ -205,6 +240,8 @@ public class InMemoryTaskManager implements TaskManager {
                         subtasks.remove(id);
                     });
             epics.remove(epicId);
+        } else {
+            throw new NotFoundException("Задача не найдена");
         }
     }
 
@@ -220,6 +257,8 @@ public class InMemoryTaskManager implements TaskManager {
             epic.unlinkSubtask(subtaskId);
             checkStatusEpic(epic);
             setEpicTimes(epic);
+        } else {
+            throw new NotFoundException("Задача не найдена");
         }
     }
 
